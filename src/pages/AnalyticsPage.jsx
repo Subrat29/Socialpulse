@@ -113,7 +113,7 @@ export default function AnalyticsPage() {
       {parsedMetrics && (
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Engagement Metrics</CardTitle>
+            <CardTitle>Average Engagement Metrics</CardTitle>
           </CardHeader>
           <CardContent>
             <EngagementMetricsChart data={parsedMetrics} />
