@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle2, AlertCircle, BarChart3 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import PostTypeSelector from '@/components/PostTypeSelector';
 import EngagementMetricsChart from '@/components/EngagementMetricsChart';
@@ -38,16 +38,42 @@ export default function AnalyticsPage() {
       }
       const data = await response.json();
       setApiData(data);
+      
+      // Enhanced success toast with icon
       toast({
-        title: "Data Updated",
-        description: `Showing metrics for ${selectedType}`,
+        title: (
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-green-500" />
+            <span>Data Updated</span>
+          </div>
+        ),
+        description: (
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <span>Showing metrics for {selectedType}</span>
+          </div>
+        ),
+        className: "border-l-2 border-green-500",
       });
     } catch (err) {
       setError(err.message);
+      
+      // Enhanced error toast with icon
       toast({
-        title: "Error",
-        description: "Failed to fetch data. Please try again.",
+        title: (
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-red-500" />
+            <span>Error</span>
+          </div>
+        ),
+        description: (
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-red-500" />
+            <span>Failed to fetch data. Please try again.</span>
+          </div>
+        ),
         variant: "destructive",
+        className: "border-l-2 border-red-500",
       });
     } finally {
       setLoading(false);
@@ -67,7 +93,6 @@ export default function AnalyticsPage() {
         const text = parsedOutput[1]?.results?.message?.text;
 
         if (text) {
-          // Updated regex patterns to better match the API response format
           const insightsPattern = /INSIGHTS:\n((?:- .*\n?)*)/;
           const recommendationsPattern = /RECOMMENDED ACTIONS:\n((?:- .*\n?)*)/;
           const metricsPattern = /METRICS:\n([\s\S]*?)(?:\n\n|$)/;
@@ -76,17 +101,32 @@ export default function AnalyticsPage() {
           const recommendationsMatch = text.match(recommendationsPattern);
           const metricsMatch = text.match(metricsPattern);
 
-          // console.log("Recommendations Match:", recommendationsMatch);
-
           setParsedInsights(insightsMatch ? insightsMatch[1].trim() : '');
           setParsedRecommendations(recommendationsMatch ? recommendationsMatch[1].trim() : '');
           setParsedMetrics(metricsMatch ? metricsMatch[1].trim() : '');
         }
       } catch (error) {
+        // Enhanced error toast for parsing errors
+        toast({
+          title: (
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              <span>Parsing Error</span>
+            </div>
+          ),
+          description: (
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 text-red-500" />
+              <span>Failed to parse data. Please try again.</span>
+            </div>
+          ),
+          variant: "destructive",
+          className: "border-l-4 border-red-500",
+        });
         console.error("Error parsing apiData.output: ", error.message);
       }
     }
-  }, [apiData]);
+  }, [apiData, toast]);
 
   return (
     <div className="container mx-auto py-10">
@@ -97,7 +137,7 @@ export default function AnalyticsPage() {
           <CardTitle>Select Post Type</CardTitle>
         </CardHeader>
         <CardContent>
-          <PostTypeSelector onSelectPostType={handlePostTypeChange} />
+          <PostTypeSelector loading={loading} onSelectPostType={handlePostTypeChange} />
           {loading && <Loader2 className="h-8 w-8 animate-spin mx-auto mt-4" />}
         </CardContent>
       </Card>
