@@ -1,27 +1,15 @@
-import PropTypes from 'prop-types'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Dummy recommendations - replace with actual data or AI-generated recommendations in the future
-const dummyRecommendations = {
-  carousel: [
-    "Create more carousel posts to boost engagement",
-    "Experiment with different numbers of slides (3-5) to find the sweet spot",
-    "Use a mix of images and videos in your carousels"
-  ],
-  reel: [
-    "Focus on creating more short-form video content",
-    "Utilize trending audio in your reels",
-    "Experiment with different video lengths (15-30 seconds)"
-  ],
-  static: [
-    "Create more infographic-style static posts",
-    "Invest in high-quality imagery",
-    "Include faces in your static posts when relevant"
-  ]
-}
+const RecommendationsSection = ({ recommendations }) => {
+  // Parse recommendations into an array
+  const parseRecommendations = (recommendationsText) => {
+    return recommendationsText.split('\n').map(recommendation => 
+      recommendation.startsWith('- ') ? recommendation.substring(2) : recommendation
+    ).filter(recommendation => recommendation.length > 0);
+  };
 
-export default function RecommendationsSection({ postType }) {
-  const recommendations = dummyRecommendations[postType]
+  const recommendationsList = parseRecommendations(recommendations);
 
   return (
     <Card>
@@ -30,16 +18,13 @@ export default function RecommendationsSection({ postType }) {
       </CardHeader>
       <CardContent>
         <ul className="list-disc pl-5 space-y-2">
-          {recommendations.map((recommendation, index) => (
+          {recommendationsList.map((recommendation, index) => (
             <li key={index}>{recommendation}</li>
           ))}
         </ul>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-RecommendationsSection.propTypes = {
-  postType: PropTypes.oneOf(['carousel', 'reel', 'static']).isRequired,
-}
-
+export default RecommendationsSection;
