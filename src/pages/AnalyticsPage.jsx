@@ -21,7 +21,7 @@ export default function AnalyticsPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://socialpulse-backend-pyrp.onrender.com', {
+      const response = await fetch('https://socialpulse-backend-pyrp.onrender.com/api/run-flow', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
