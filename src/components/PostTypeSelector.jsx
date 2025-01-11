@@ -30,8 +30,8 @@ export default function PostTypeSelector({ loading = false, onSelectPostType = (
   ];
 
   return (
-    <div className="inline-flex p-1.5 rounded-lg bg-secondary/10 border border-secondary/20">
-      {postTypes.map(({ type, label, icon }) => {
+    <div className="flex flex-col sm:flex-row p-1.5 rounded-lg bg-secondary/10 border border-secondary/20 w-full sm:w-auto gap-1 sm:gap-0">
+      {postTypes.map(({ type, label, icon }, index) => {
         const isSelected = selectedType === type;
         const isDisabled = loading && !isSelected;
 
@@ -41,14 +41,17 @@ export default function PostTypeSelector({ loading = false, onSelectPostType = (
             variant={isSelected ? "default" : "ghost"}
             disabled={isDisabled}
             className={`
-              relative flex items-center gap-2 px-4 py-2 rounded-md
+              relative flex items-center justify-center sm:justify-start gap-2 
+              px-4 py-2 min-w-[120px]
               transition-all duration-200 ease-in-out
               ${isSelected 
                 ? 'text-primary-foreground shadow-sm hover:bg-primary/90'
                 : 'hover:bg-secondary/20'
               }
               ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
-              first:rounded-l-md last:rounded-r-md
+              ${index === 0 ? 'rounded-md sm:rounded-l-md sm:rounded-r-none' : ''}
+              ${index === postTypes.length - 1 ? 'rounded-md sm:rounded-r-md sm:rounded-l-none' : ''}
+              ${index !== 0 && index !== postTypes.length - 1 ? 'rounded-md sm:rounded-none' : ''}
               disabled:pointer-events-none
             `}
             onClick={() => handleSelect(type)}
@@ -59,7 +62,7 @@ export default function PostTypeSelector({ loading = false, onSelectPostType = (
             `}>
               {icon}
             </span>
-            <span className="text-sm font-medium">{label}</span>
+            <span className="text-sm font-medium whitespace-nowrap">{label}</span>
           </Button>
         );
       })}
